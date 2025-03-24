@@ -5,8 +5,11 @@ from app.routes.user_routes import router as user_router
 from app.routes.employee_routes import router as employee_router
 from app.routes.auth_routes import router as auth_router
 from app.middlewares.auth_middleware import AuthMiddleware
+from app.database.database import initialize_database
 
 app = FastAPI()
+
+initialize_database()
 
 # Add authentication middleware
 app.add_middleware(AuthMiddleware)

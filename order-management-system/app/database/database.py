@@ -1,9 +1,9 @@
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import declarative_base
+DATABASE_URL = "mysql+pymysql://root:159852@localhost:3306/order_manager_db"
 
-
-DATABASE_URL = "mysql+pymysql://username:password@localhost:3306/order_manager_db"
-
+Base = declarative_base()
 
 engine = create_engine(DATABASE_URL, pool_pre_ping=True)
 
@@ -29,3 +29,14 @@ def execute_query(query: str, params: dict = None):
     with engine.connect() as connection:
         result = connection.execute(text(query), params or {})
         return result.fetchall()
+    
+def initialize_database():
+    """
+    Crea las tablas en la base de datos si no existen.
+    """
+    try:
+        # Crear todas las tablas en el orden correcto
+        Base.metadata.create_all(bind=engine)
+        print("Tablas creadas o ya existentes en la base de datos.")
+    except Exception as e:
+        print(f"Error al inicializar la base de datos: {str(e)}")

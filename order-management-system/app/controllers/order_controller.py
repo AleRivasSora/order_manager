@@ -31,11 +31,11 @@ class OrderController:
         if not order:
             raise HTTPException(status_code=404, detail="Order not found")
         try:
-            # Update only the fields provided in the OrderUpdate schema
+           
             update_data = order_update.dict(exclude_unset=True)
             for key, value in update_data.items():
                 setattr(order, key, value)
-            order.updated_at = datetime.now()  # Update the timestamp
+            order.updated_at = datetime.now()  
             self.db.commit()
             self.db.refresh(order)
             return OrderRead.from_orm(order)

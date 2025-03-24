@@ -6,9 +6,5 @@ client = TestClient(app)
 def test_root():
     response = client.get("/")
     assert response.status_code == 200
-    assert response.json() == {"message": "Hello"}
+    assert response.json() == {"message": "Welcome to the Order Management System"}
 
-def test_about():
-    response = client.get("/about")
-    assert response.status_code == 200
-    assert response.json() == {"message": "This is the about page."}

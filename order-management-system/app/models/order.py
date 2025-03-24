@@ -1,10 +1,9 @@
 from sqlalchemy import Column, Integer, String, Enum, DateTime, ForeignKey
-from sqlalchemy.ext.declarative import declarative_base
+from app.database.database import Base
 from sqlalchemy.orm import relationship
 from datetime import datetime
 import enum
 
-Base = declarative_base()
 
 class OrderStatus(str, enum.Enum):
     pending = "pending"
