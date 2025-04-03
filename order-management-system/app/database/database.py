@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import declarative_base
-DATABASE_URL = "mysql+pymysql://root:159852@localhost:3306/order_manager_db"
+DATABASE_URL = "mysql+pymysql://root:@localhost:3306/order_manager_db"
 
 Base = declarative_base()
 
