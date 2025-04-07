@@ -12,4 +12,5 @@ class Item(Base):
     price = Column(Float, nullable=False) 
     stock = Column(Integer, default=0)  
     order_id = Column(Integer, ForeignKey("orders.id"), nullable=True)  
-    order = relationship("Order", back_populates="items") 
+    order = relationship("Order", back_populates="items")
+    image = Column(String(255), nullable=True) 

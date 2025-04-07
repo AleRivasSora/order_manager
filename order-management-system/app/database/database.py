@@ -23,7 +23,7 @@ def get_db():
     try:
         yield db
     finally:
-        db.close()
+        db.close() 
 
 def execute_query(query: str, params: dict = None):
     with engine.connect() as connection:
@@ -35,7 +35,7 @@ def initialize_database():
     Crea las tablas en la base de datos si no existen.
     """
     try:
-        # Crear todas las tablas en el orden correcto
+        import app.models 
         Base.metadata.create_all(bind=engine)
         print("Tablas creadas o ya existentes en la base de datos.")
     except Exception as e:

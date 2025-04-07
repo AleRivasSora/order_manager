@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.schemas.user import UserCreate, UserUpdate, UserRead
 from app.controllers.user_controller import UserController
@@ -6,54 +6,33 @@ from app.database.database import get_db
 
 router = APIRouter()
 
+def get_user_controller(db: Session = Depends(get_db)) -> UserController:
+    return UserController(db)
 
 @router.post("/users/", response_model=UserRead, status_code=201)
-def create_user(user: UserCreate, db: Session = Depends(get_db)):
+def create_user(user: UserCreate, user_controller: UserController = Depends(get_user_controller)):
     """
     Create a new user.
     """
-    try:
-        user_controller = UserController(db)
-        return user_controller.create_user(user)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    return user_controller.create_user(user)
 
-
-@router.get("/users/{user_id}", response_model=UserRead)
-def get_user(user_id: int, db: Session = Depends(get_db)):
+@router.get("/users/{user_id}", response_model=UserRead, responses={404: {"description": "User not found"}})
+def get_user(user_id: int, user_controller: UserController = Depends(get_user_controller)):
     """
     Retrieve a user by ID.
     """
-    try:
-        user_controller = UserController(db)
-        return user_controller.get_user(user_id)
-    except HTTPException as e:
-        raise e
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    return user_controller.get_user(user_id)
 
-
-@router.put("/users/{user_id}", response_model=UserRead)
-def update_user(user_id: int, user: UserUpdate, db: Session = Depends(get_db)):
+@router.put("/users/{user_id}", response_model=UserRead, responses={404: {"description": "User not found"}})
+def update_user(user_id: int, user: UserUpdate, user_controller: UserController = Depends(get_user_controller)):
     """
     Update an existing user.
     """
-    try:
-        user_controller = UserController(db)
-        return user_controller.update_user(user_id, user)
-    except HTTPException as e:
-        raise e
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
-
+    return user_controller.update_user(user_id, user)
 
 @router.get("/users/", response_model=list[UserRead])
-def list_users(db: Session = Depends(get_db)):
+def list_users(skip: int = 0, limit: int = 10, user_controller: UserController = Depends(get_user_controller)):
     """
-    List all users.
+    List all users with pagination.
     """
-    try:
-        user_controller = UserController(db)
-        return user_controller.get_all_users()
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    return user_controller.get_all_users(skip=skip, limit=limit)

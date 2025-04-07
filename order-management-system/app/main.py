@@ -7,19 +7,22 @@ from app.routes.auth_routes import router as auth_router
 from app.middlewares.auth_middleware import AuthMiddleware
 from app.database.database import initialize_database
 
-app = FastAPI()
 
-initialize_database()
+app = FastAPI()
 
 # Add authentication middleware
 app.add_middleware(AuthMiddleware)
 
+@app.on_event("startup")
+def on_startup():
+    initialize_database()
+
 # Include all routers
-app.include_router(auth_router, prefix="/auth", tags=["Authentication"])
-app.include_router(order_router, prefix="/orders", tags=["Orders"])
-app.include_router(item_router, prefix="/items", tags=["Items"])
-app.include_router(user_router, prefix="/users", tags=["Users"])
-app.include_router(employee_router, prefix="/employees", tags=["Employees"])
+app.include_router(auth_router , tags=["Authentication"])
+app.include_router(order_router ,tags=["Orders"])
+app.include_router(item_router ,tags=["Items"])
+app.include_router(user_router, tags=["Users"])
+app.include_router(employee_router,  tags=["Employees"])
 
 @app.get("/")
 def read_root():
